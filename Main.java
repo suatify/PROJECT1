@@ -1,5 +1,4 @@
 
-
 // Main.java — Students version
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -216,6 +215,7 @@ public class Main {
     public static int daysAboveThreshold(String comm, int threshold) {
         int commoddityIndex = -1;
         int totalProfit = 0;
+        int daysCounter = 0;
 
         for(int commIndex = 0 ; commIndex < COMMS ; commIndex++){//
             if (comm.equals(commodities[commIndex])){
@@ -228,27 +228,94 @@ public class Main {
 
         for (int monthIndex = 0; monthIndex < MONTHS ; monthIndex++) {
             for (int dayIndex = 0; dayIndex < DAYS; dayIndex++) {
-                totalProfit +=  marketData[monthIndex][dayIndex][commoddityIndex];
-                 // burada kaldık girilen değer barajı aşar mı ona bakcan
-
-
+                totalProfit =  marketData[monthIndex][dayIndex][commoddityIndex];
+                 if(totalProfit > threshold){
+                     daysCounter++;
+                 }
             }
         }
-
-
-
-        return 1234; 
+        return daysCounter;
     }
 
-    public static int biggestDailySwing(int month) { 
-        return 1234; 
+    public static int biggestDailySwing(int month) {
+        if (month < 0 || month >= MONTHS) {
+            return -99999;
+        }
+
+        int profitOfPreviousDay = 0;
+        int profitSwing = 0;
+        int maxSwing = 0;
+        for (int dayIndex = 0; dayIndex < DAYS; dayIndex++) {
+            int profitOfDay = 0;
+
+            for (int commodityIndex = 0; commodityIndex < COMMS; commodityIndex++) {
+                profitOfDay += marketData[month][dayIndex][commodityIndex];
+            }
+
+            if (dayIndex > 0){
+              profitSwing =  Math.abs(profitOfDay - profitOfPreviousDay);
+
+                if (profitSwing > maxSwing){
+                    maxSwing = profitSwing;
+                }
+            }
+            profitOfPreviousDay = profitOfDay;
+        }
+        return maxSwing;
+
+
     }
     
     public static String compareTwoCommodities(String c1, String c2) { 
-        return "DUMMY is better by 1234"; 
+       int c1Index = 0;
+       int c2Index = 0;
+       boolean isC1Found = false;
+       boolean isC2Found = false;
+        for (int comm1Index = 0 ; comm1Index < COMMS ; comm1Index++) {
+
+            if (c1.equals(commodities[comm1Index])) {
+                c1Index = comm1Index;
+                isC1Found = true;
+                }
+            }
+
+        if (!isC1Found){
+            return "INVALID_COMMODITY";
+        }
+
+        for (int comm2Index = 0 ; comm2Index < COMMS ; comm2Index++) {
+            if (c2.equals(commodities[comm2Index])) {
+                c2Index = comm2Index;
+                isC2Found = true;
+                }
+        }
+        if(!isC2Found){
+            return "INVALID_COMMODITY";
+        }
+
+
+        if (c1Index == c2Index){
+            return "EQUAL";
+        }
+
+        int c1TotalProfit = 0;
+        int c2TotalProfit = 0;
+        for (int monthIndex = 0; monthIndex < MONTHS ; monthIndex++){
+            for (int dayIndex = 0; dayIndex < DAYS ; dayIndex++){
+                c1TotalProfit += marketData[monthIndex][dayIndex][c1Index];
+                c2TotalProfit += marketData[monthIndex][dayIndex][c2Index];
+            }
+        }
+        if(c1TotalProfit > c2TotalProfit){
+            return c1 + " is better by " + String.valueOf(c1TotalProfit);
+        } else {
+            return c2 + " is better by " + String.valueOf(c2TotalProfit);
+
+        }
     }
     
-    public static String bestWeekOfMonth(int month) { 
+    public static String bestWeekOfMonth(int month) {
+        
         return "DUMMY"; 
     }
 
@@ -257,10 +324,14 @@ public class Main {
         System.out.println("Data loaded – ready for queries");
         System.out.println("--------------");
         System.out.println(mostProfitableCommodityInMonth(2));
-        System.out.println(totalProfitOnDay(1 , 3));
+        System.out.println("dddd");
+        System.out.println(totalProfitOnDay(1 , 1));
         System.out.println(commodityProfitInRange("Silver",1, 2));
         System.out.println(bestDayOfMonth(10));
         System.out.println(bestMonthForCommodity("Silver"));
         System.out.println(consecutiveLossDays("Oil"));
+        System.out.println(daysAboveThreshold("Gold" , 10000));
+        System.out.println(biggestDailySwing(2));
+        System.out.println(compareTwoCommodities("Oil" , "Gold"));
 
 }}
