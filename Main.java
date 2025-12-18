@@ -18,7 +18,7 @@ public class Main {
 
         for (int monthIndex = 0; monthIndex < MONTHS; monthIndex++) {
             Scanner sc = null;
-            String filename = months[monthIndex] + ".txt";
+            String filename = "../" + months[monthIndex] + ".txt";
 
             try {
                 sc = new Scanner(Paths.get(filename));
@@ -150,8 +150,8 @@ public class Main {
     public static String bestMonthForCommodity(String comm) {
 
         int commidityIndex = -1;
-        int currentProfit = 0;
-        int bestMonth= -1;
+        int currentProfit = Integer.MIN_VALUE;
+        int bestMonth= 0;
 
         for(int commIndex = 0 ; commIndex < COMMS ; commIndex++){
             if (comm.equals(commodities[commIndex])) {
@@ -173,7 +173,7 @@ public class Main {
                 bestMonth = monthIndex;
             }
         }
-        return months[bestMonth] + " " + currentProfit;
+        return months[bestMonth];
     }
 
     public static int consecutiveLossDays(String comm) {
@@ -315,9 +315,40 @@ public class Main {
     }
     
     public static String bestWeekOfMonth(int month) {
-        
-        return "DUMMY"; 
+        int[] week = new int[4];
+        int bestWeek = week[0];
+        String weekName = "Week-1";
+
+        if (month < 0 || month >= MONTHS) {
+            return "INVALID_MONTH";
+        }
+
+        int totalProfit = 0;
+
+
+        for (int dayIndex = 0; dayIndex < MONTHS; dayIndex++) {
+            totalProfit += totalProfitOnDay(month, dayIndex);
+
+            int weekIndex = dayIndex / 7;
+
+            if (weekIndex < 4) {
+                week[weekIndex] += totalProfit;
+            }
+        }
+            for (int i = 1; i < week.length; i++) {
+                if (week[i] > bestWeek) {
+                    bestWeek = week[i];
+                    weekName = "Week-" + (i + 1);
+                }
+
+
+        }
+
+
+        return "Best week is " + weekName + " with " + String.valueOf(bestWeek);
     }
+
+
 
     public static void main(String[] args) {
         loadData();
@@ -333,5 +364,5 @@ public class Main {
         System.out.println(daysAboveThreshold("Gold" , 10000));
         System.out.println(biggestDailySwing(2));
         System.out.println(compareTwoCommodities("Oil" , "Gold"));
-
+        System.out.println(bestWeekOfMonth(8));
 }}
