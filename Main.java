@@ -21,7 +21,7 @@ public class Main {
             String filename = months[monthIndex] + ".txt";
 
             try {
-                sc = new Scanner(Paths.get(filename));
+                sc = new Scanner(Paths.get("Data_Files" , filename));
 
 
                 if (sc.hasNextLine()) {
@@ -53,7 +53,8 @@ public class Main {
                 }
 
             } catch (IOException e) {
-                System.out.println("ERROR: Dosya okuma hatası: " + filename);
+                System.out.println("Aranan tam yol: " + Paths.get(filename).toAbsolutePath());
+                System.out.println("ERROR");
                 e.printStackTrace();
             }
             finally {
@@ -72,7 +73,7 @@ public class Main {
             return "INVALID_MONTH";
         }
 
-        int maxProfit = 0;
+        int maxProfit = Integer.MIN_VALUE;;
         String mostProfitableComm = "";
 
         for (int commIndex = 0; commIndex < COMMS; commIndex++) {
@@ -130,15 +131,15 @@ public class Main {
         if(month < 0 || month >= MONTHS){
             return -1;
         }
-        int bestDay = 0;
-        int totalProfit = 0;
+        int bestDay = 1;
+        int maxProfit = totalProfitOnDay(month, 1);;
 
         for (int dayIndex = 2 ; dayIndex <= DAYS; dayIndex++){ // totalProfitOnDay günleri 1-28 olarak alıyo ya ondan dolayı 2'den başladı. 1. günü max kabul edip ikiye geçiyoz
-                int currentProfit = 0;
-                currentProfit += totalProfitOnDay(month, dayIndex);
 
-            if (currentProfit > totalProfit ){
-                totalProfit = currentProfit;
+                int currentProfit = totalProfitOnDay(month, dayIndex);
+
+            if (currentProfit > maxProfit ){
+                maxProfit = currentProfit;
                 bestDay= dayIndex;
             }
         }
@@ -148,7 +149,7 @@ public class Main {
     public static String bestMonthForCommodity(String comm) {
 
         int commidityIndex = -1;
-        int currentProfit = 0;
+        int currentProfit = Integer.MIN_VALUE;;
         int bestMonth= 0;
 
 
@@ -162,14 +163,14 @@ public class Main {
             return "INVALID_COMMODITY";
         }
 
-         for(int m = 0 ; m < 12 ; m++) {
+         for(int monthIndex = 0 ; monthIndex < 12 ; monthIndex++) {
             int totalProfit= 0;
-            for (int d = 1; d <= 28; d++) {
-               totalProfit +=  totalProfitOnDay(m, d);
+            for (int dayIndex = 0; dayIndex < DAYS; dayIndex++) {
+                totalProfit += marketData[monthIndex][dayIndex][commidityIndex];
             }
             if(totalProfit > currentProfit){
                 currentProfit = totalProfit;
-                bestMonth = m;
+                bestMonth = monthIndex;
             }
         }
 
@@ -292,7 +293,7 @@ public class Main {
 
 
         if (c1Index == c2Index){
-            return "EQUAL";
+            return "Equal";
         }
 
         int c1TotalProfit = 0;
@@ -304,10 +305,11 @@ public class Main {
             }
         }
         if(c1TotalProfit > c2TotalProfit){
-            return c1 + " is better by " + String.valueOf(c1TotalProfit);
+            return c1 + " is better by " + String.valueOf(c1TotalProfit - c2TotalProfit);
+        } else if (c2TotalProfit > c1TotalProfit ) {
+            return c2 + " is better by " + String.valueOf(c2TotalProfit - c1TotalProfit);
         } else {
-            return c2 + " is better by " + String.valueOf(c2TotalProfit);
-
+            return "Equal";
         }
     }
     
