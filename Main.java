@@ -15,14 +15,12 @@ public class Main {
 
     // ======== REQUIRED METHOD LOAD DATA (Students fill this) ========
     public static void loadData() {
-
         for (int monthIndex = 0; monthIndex < MONTHS; monthIndex++) {
             Scanner sc = null;
             String filename = months[monthIndex] + ".txt";
 
             try {
-                sc = new Scanner(Paths.get("src" , "Data_Files" , filename));
-
+                sc = new Scanner(Paths.get("Data_Files" , filename));
 
                 if (sc.hasNextLine()) {
                     sc.nextLine(); // başlığı atla
@@ -306,6 +304,6 @@ public class Main {
 
     public static void main(String[] args) {
         loadData();
-
+       
     }
 }
